@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRS Generator - Project Information</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='home.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Software Requirements Specification Generator</h1>
+            <p class="subtitle">Please provide detailed information about your project</p>
+        </header>
+
+        <form id="srsForm" class="form" action="/generate_introduction" method="POST">
+            <!-- Project Identity Section -->
+            <section class="form-section">
+                <h2 class="section-title">Project Identity</h2>
+                
+                <div class="form-group">
+                    <label for="project_name" class="required">Project Name</label>
+                    <input 
+                        type="text" 
+                        id="project_name" 
+                        name="project_name" 
+                        placeholder="e.g. Customer Churn Prediction System"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="problem_statement" class="required">Problem Statement</label>
+                    <textarea 
+                        id="problem_statement" 
+                        name="problem_statement" 
+                        rows="3"
+                        placeholder="e.g. Predict customers likely to leave the service to reduce churn"
+                        required
+                    ></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="required">Target Users</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="target_users" value="Admin">
+                            <span>Admin</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="target_users" value="End User">
+                            <span>End User</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="target_users" value="Manager">
+                            <span>Manager</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="target_users" value="Analyst">
+                            <span>Analyst</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="target_users" value="Customer">
+                            <span>Customer</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="target_users" value="Other" id="target_users_other_check">
+                            <span>Other</span>
+                        </label>
+                    </div>
+                    <input 
+                        type="text" 
+                        id="target_users_custom" 
+                        class="custom-input"
+                        placeholder="Specify other user type"
+                        style="display: none;"
+                    >
+                </div>
+            </section>
+
+            <!-- System Context Section -->
+            <section class="form-section">
+                <h2 class="section-title">System Context</h2>
+                
+                <div class="form-group">
+                    <label for="application_type" class="required">Application Type</label>
+                    <select id="application_type" name="application_type" required>
+                        <option value="">Select application type...</option>
+                        <option value="Web Application">Web Application</option>
+                        <option value="Mobile Application">Mobile Application</option>
+                        <option value="Backend Service">Backend Service</option>
+                        <option value="AI/ML System">AI/ML System</option>
+                        <option value="Desktop Application">Desktop Application</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="domain" class="required">Domain/Industry</label>
+                    <select id="domain" name="domain" required>
+                        <option value="">Select domain...</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Healthcare">Healthcare</option>
+                        <option value="E-commerce">E-commerce</option>
+                        <option value="Education">Education</option>
+                        <option value="Telecom">Telecom</option>
+                        <option value="Retail">Retail</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <input 
+                        type="text" 
+                        id="domain_custom" 
+                        class="custom-input"
+                        placeholder="Specify domain"
+                        style="display: none;"
+                    >
+                </div>
+            </section>
+
+            <!-- Functional Scope Section -->
+            <section class="form-section">
+                <h2 class="section-title">Functional Scope</h2>
+                
+                <div class="form-group">
+                    <label for="core_features" class="required">Core Features</label>
+                    <textarea 
+                        id="core_features" 
+                        name="core_features" 
+                        rows="4"
+                        placeholder="e.g. User authentication, dashboard analytics, data upload (one per line or comma-separated)"
+                        required
+                    ></textarea>
+                    <small class="help-text">List each feature on a new line or separate with commas</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="primary_user_flow">Primary User Flow</label>
+                    <textarea 
+                        id="primary_user_flow" 
+                        name="primary_user_flow" 
+                        rows="4"
+                        placeholder="e.g. User logs in, uploads data, views prediction results"
+                    ></textarea>
+                </div>
+            </section>
+
+            <!-- Non-Functional Requirements Section -->
+            <section class="form-section">
+                <h2 class="section-title">Non-Functional Requirements</h2>
+                
+                <div class="form-group">
+                    <label for="expected_user_scale" class="required">Expected User Scale</label>
+                    <select id="expected_user_scale" name="expected_user_scale" required>
+                        <option value="">Select user scale...</option>
+                        <option value="<100">Less than 100 users</option>
+                        <option value="100-1k">100 - 1,000 users</option>
+                        <option value="1k-100k">1,000 - 100,000 users</option>
+                        <option value=">100k">More than 100,000 users</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="performance_expectation" class="required">Performance Expectation</label>
+                    <select id="performance_expectation" name="performance_expectation" required>
+                        <option value="">Select performance level...</option>
+                        <option value="Normal">Normal</option>
+                        <option value="High">High</option>
+                        <option value="Real-time">Real-time</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Security and Compliance Section -->
+            <section class="form-section">
+                <h2 class="section-title">Security and Compliance</h2>
+                
+                <div class="form-group">
+                    <label class="required">Authentication Required?</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="authentication_required" value="true" required>
+                            <span>Yes</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="authentication_required" value="false">
+                            <span>No</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="required">Handles Sensitive Data?</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="sensitive_data_handling" value="true" required>
+                            <span>Yes</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="sensitive_data_handling" value="false">
+                            <span>No</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Compliance Requirements</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="compliance_requirements" value="None">
+                            <span>None</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="compliance_requirements" value="GDPR">
+                            <span>GDPR</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="compliance_requirements" value="HIPAA">
+                            <span>HIPAA</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="compliance_requirements" value="PCI-DSS">
+                            <span>PCI-DSS</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="compliance_requirements" value="Other" id="compliance_other_check">
+                            <span>Other</span>
+                        </label>
+                    </div>
+                    <input 
+                        type="text" 
+                        id="compliance_custom" 
+                        class="custom-input"
+                        placeholder="Specify compliance requirement"
+                        style="display: none;"
+                    >
+                </div>
+            </section>
+
+            <!-- Technical Preferences Section -->
+            <section class="form-section">
+                <h2 class="section-title">Technical Preferences</h2>
+                
+                <div class="form-group">
+                    <label for="preferred_backend">Preferred Backend Technology</label>
+                    <select id="preferred_backend" name="preferred_backend">
+                        <option value="">Select backend...</option>
+                        <option value="Python">Python</option>
+                        <option value="Java">Java</option>
+                        <option value="Node.js">Node.js</option>
+                        <option value="Go">Go</option>
+                        <option value="Any">Any</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="database_preference">Database Preference</label>
+                    <select id="database_preference" name="database_preference">
+                        <option value="">Select database type...</option>
+                        <option value="SQL">SQL (Relational)</option>
+                        <option value="NoSQL">NoSQL</option>
+                        <option value="Any">Any</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="deployment_preference">Deployment Preference</label>
+                    <select id="deployment_preference" name="deployment_preference">
+                        <option value="">Select deployment...</option>
+                        <option value="Cloud">Cloud</option>
+                        <option value="On-Premise">On-Premise</option>
+                        <option value="Hybrid">Hybrid</option>
+                        <option value="Any">Any</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Output Control Section -->
+            <section class="form-section">
+                <h2 class="section-title">Output Control</h2>
+                
+                <div class="form-group">
+                    <label for="srs_detail_level" class="required">SRS Detail Level</label>
+                    <select id="srs_detail_level" name="srs_detail_level" required>
+                        <option value="">Select detail level...</option>
+                        <option value="High-level">High-level (Overview and key requirements)</option>
+                        <option value="Technical">Technical (Detailed specifications)</option>
+                        <option value="Enterprise-grade">Enterprise-grade (Comprehensive documentation)</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="reset" class="btn btn-secondary">Clear Form</button>
+                <button type="submit" class="btn btn-primary">Generate SRS</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="{{ url_for('static', path='home.js') }}"></script>
+</body>
+</html>
