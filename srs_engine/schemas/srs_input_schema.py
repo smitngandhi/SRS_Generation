@@ -5,6 +5,8 @@ from typing import List, Optional
 class ProjectIdentity(BaseModel):
     """Project identification and basic information"""
     project_name: str = Field(..., description="Name of the project")
+    author: List[str] = Field(..., description="List of authors")
+    organization: str = Field(..., description="Organization or company name")
     problem_statement: str = Field(..., description="Problem this system is intended to solve")
     target_users: List[str] = Field(..., min_items=1, description="Primary users of the system")
     

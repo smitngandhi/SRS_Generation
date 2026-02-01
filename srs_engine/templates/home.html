@@ -13,7 +13,7 @@
             <p class="subtitle">Please provide detailed information about your project</p>
         </header>
 
-        <form id="srsForm" class="form" action="/generate_introduction" method="POST">
+        <form id="srsForm" class="form" action="/generate_srs" method="POST">
             <!-- Project Identity Section -->
             <section class="form-section">
                 <h2 class="section-title">Project Identity</h2>
@@ -25,6 +25,29 @@
                         id="project_name" 
                         name="project_name" 
                         placeholder="e.g. Customer Churn Prediction System"
+                        required
+                    >
+                </div>
+
+
+                <div class="form-group">
+                <label for="author" class="required">Author(s)</label>
+                <textarea 
+                    id="author" 
+                    name="author" 
+                    rows="3"
+                    placeholder="Enter names ( for e.g. ):- &#10;Jane Doe&#10;Mark Felix&#10;Lisa Wong" 
+                    required></textarea>
+                <small class="help-text">Enter one name per line.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="organization" class="required">Organization</label>
+                    <input 
+                        type="text" 
+                        id="organization" 
+                        name="organization" 
+                        placeholder="e.g. TechCorp Solutions"
                         required
                     >
                 </div>

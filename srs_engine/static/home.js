@@ -37,6 +37,8 @@ document.addEventListener("DOMContentLoaded", () => {
             if (customCompliance) compliance.push(customCompliance);
         }
 
+        // ---------- Authors ----------
+        const author = splitToArray(formData.get("author"));
         // ---------- Core Features ----------
         const coreFeatures = splitToArray(formData.get("core_features"));
 
@@ -50,6 +52,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const payload = {
             project_identity: {
                 project_name: formData.get("project_name"),
+                author: author,
+                organization: formData.get("organization").trim(),
                 problem_statement: formData.get("problem_statement"),
                 target_users: targetUsers
             },
@@ -94,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // ---------- SEND TO BACKEND ----------
         try {
-            const response = await fetch("/generate_introduction", {
+            const response = await fetch("/generate_srs", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

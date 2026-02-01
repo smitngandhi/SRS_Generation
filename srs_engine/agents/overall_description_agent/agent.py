@@ -6,7 +6,6 @@ from .prompt import AGENT_DESCRIPTION , AGENT_INSTRUCTION
 from ...schemas.introduction_schema import IntroductionSection
 from ...utils.globals import generate_content_config
 
-
 load_dotenv(find_dotenv())
 
 GROQ_MODEL = os.getenv("GROQ_MODEL")
@@ -20,26 +19,26 @@ groq_llm = LiteLlm(
 # Phase 3 System Design Agent ( for CLI )
 # ==================================================
 
-introduction_agent = LlmAgent(
-    name="introduction_agent",
+overall_description_agent = LlmAgent(
+    name="overall_description_agent",
     model=groq_llm,
-    output_schema=IntroductionSection,
+    # output_schema=IntroductionSection,
     description=AGENT_DESCRIPTION,
     instruction=AGENT_INSTRUCTION,
-    output_key="introduction_section",
+    output_key="overall_description_section",
     generate_content_config = generate_content_config
 )
 
 
 ## For app
 
-def create_introduction_agent():
+def create_overall_description_agent():
     return LlmAgent(
-    name="introduction_agent",
-    model=groq_llm,
-    output_schema=IntroductionSection,
-    description=AGENT_DESCRIPTION,
-    instruction=AGENT_INSTRUCTION,
-    output_key="introduction_section",
-    generate_content_config = generate_content_config
-)
+        name="overall_description_agent",
+        model=groq_llm,
+        # output_schema=IntroductionSection,
+        description=AGENT_DESCRIPTION,
+        instruction=AGENT_INSTRUCTION,
+        output_key="overall_description_section",
+        generate_content_config= generate_content_config
+    )
