@@ -1,8 +1,9 @@
 """
-SRS Document Generator Utility
+SRS Document Generator Utility with Table of Contents
 
 This module provides functionality to generate professionally formatted 
-Software Requirements Specification (SRS) documents from JSON data.
+Software Requirements Specification (SRS) documents from JSON data with
+automatic Table of Contents and page numbering.
 """
 
 from docx import Document
@@ -16,7 +17,7 @@ from typing import Dict, Any, List, Optional
 
 
 class SRSDocumentGenerator:
-    """Generate SRS documents from JSON data with proper formatting."""
+    """Generate SRS documents from JSON data with proper formatting and TOC."""
     
     def __init__(self, project_name: str, authors: List[str] = None, organization: str = "Organization Name"):
         """
@@ -97,40 +98,69 @@ class SRSDocumentGenerator:
         h3_style.paragraph_format.space_before = Pt(12)
         h3_style.paragraph_format.space_after = Pt(6)
         
+        # TOC Heading style
+        try:
+            toc_heading_style = styles['TOC Heading']
+        except KeyError:
+            toc_heading_style = styles.add_style('TOC Heading', WD_STYLE_TYPE.PARAGRAPH)
+        toc_heading_font = toc_heading_style.font
+        toc_heading_font.name = 'Arial'
+        toc_heading_font.size = Pt(16)
+        toc_heading_font.bold = True
+        toc_heading_font.color.rgb = RGBColor(0, 0, 0)
+        toc_heading_style.paragraph_format.space_before = Pt(24)
+        toc_heading_style.paragraph_format.space_after = Pt(12)
+        toc_heading_style.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        
     def _add_header_footer(self):
-        """Add header and footer to all pages."""
-        section = self.doc.sections[0]
+        """Add header and footer to all content pages (not title/TOC)."""
+        # Get the last section (content section)
+        sections = self.doc.sections
         
-        # Header
-        header = section.header
-        header_para = header.paragraphs[0]
-        header_para.text = f"SRS for {self.project_name}"
-        header_para.alignment = WD_ALIGN_PARAGRAPH.LEFT
-        header_para.runs[0].font.size = Pt(10)
-        header_para.runs[0].font.name = 'Arial'
-        
-        # Footer with page number
-        footer = section.footer
-        footer_para = footer.paragraphs[0]
-        footer_para.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-        
-        # Add page number field
-        run = footer_para.add_run()
-        fldChar1 = OxmlElement('w:fldChar')
-        fldChar1.set(qn('w:fldCharType'), 'begin')
-        
-        instrText = OxmlElement('w:instrText')
-        instrText.set(qn('xml:space'), 'preserve')
-        instrText.text = "PAGE"
-        
-        fldChar2 = OxmlElement('w:fldChar')
-        fldChar2.set(qn('w:fldCharType'), 'end')
-        
-        run._r.append(fldChar1)
-        run._r.append(instrText)
-        run._r.append(fldChar2)
-        run.font.size = Pt(10)
-        run.font.name = 'Arial'
+        # Configure all sections
+        for idx, section in enumerate(sections):
+            if idx == 0:
+                # Title page section - no header/footer page numbers
+                continue
+            elif idx == 1:
+                # TOC page section - no header/footer page numbers (optional)
+                continue
+            else:
+                # Content sections - add header and footer
+                # Header
+                header = section.header
+                header_para = header.paragraphs[0] if header.paragraphs else header.add_paragraph()
+                header_para.text = f"SRS for {self.project_name}"
+                header_para.alignment = WD_ALIGN_PARAGRAPH.LEFT
+                if header_para.runs:
+                    header_para.runs[0].font.size = Pt(10)
+                    header_para.runs[0].font.name = 'Arial'
+                
+                # Footer with page number
+                footer = section.footer
+                footer_para = footer.paragraphs[0] if footer.paragraphs else footer.add_paragraph()
+                footer_para.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                
+                # Clear existing content
+                footer_para.clear()
+                
+                # Add page number field
+                run = footer_para.add_run()
+                fldChar1 = OxmlElement('w:fldChar')
+                fldChar1.set(qn('w:fldCharType'), 'begin')
+                
+                instrText = OxmlElement('w:instrText')
+                instrText.set(qn('xml:space'), 'preserve')
+                instrText.text = "PAGE"
+                
+                fldChar2 = OxmlElement('w:fldChar')
+                fldChar2.set(qn('w:fldCharType'), 'end')
+                
+                run._r.append(fldChar1)
+                run._r.append(instrText)
+                run._r.append(fldChar2)
+                run.font.size = Pt(10)
+                run.font.name = 'Arial'
         
     def _add_title_page(self):
         """Add title page for the SRS document."""
@@ -193,8 +223,89 @@ class SRSDocumentGenerator:
         run.font.name = 'Arial'
         run.font.size = Pt(14)
         
-        # Add page break after title page
-        self.doc.add_page_break()
+        # Add section break (new page) after title page
+        self.doc.add_section()
+    
+    def _add_table_of_contents(self):
+        """Add Table of Contents after the title page."""
+        # Add TOC heading
+        toc_heading = self.doc.add_paragraph()
+        toc_heading.style = 'TOC Heading'
+        run = toc_heading.add_run("Table of Contents")
+        run.font.name = 'Arial'
+        run.font.size = Pt(16)
+        run.font.bold = True
+        toc_heading.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        toc_heading.paragraph_format.space_after = Pt(18)
+        
+        # Add TOC field with proper structure
+        paragraph = self.doc.add_paragraph()
+        run = paragraph.add_run()
+        
+        # Create the field start
+        fldChar_begin = OxmlElement('w:fldChar')
+        fldChar_begin.set(qn('w:fldCharType'), 'begin')
+        
+        # Create the instruction text
+        instrText = OxmlElement('w:instrText')
+        instrText.set(qn('xml:space'), 'preserve')
+        instrText.text = 'TOC \\o "1-3" \\h \\z \\u'
+        
+        # Create the field separator
+        fldChar_separate = OxmlElement('w:fldChar')
+        fldChar_separate.set(qn('w:fldCharType'), 'separate')
+        
+        # Add the field elements to the run
+        run._r.append(fldChar_begin)
+        run._r.append(instrText)
+        run._r.append(fldChar_separate)
+        
+        # Add placeholder text (will be replaced when field is updated)
+        run._r.append(OxmlElement('w:t'))
+        
+        # Create the field end
+        fldChar_end = OxmlElement('w:fldChar')
+        fldChar_end.set(qn('w:fldCharType'), 'end')
+        run._r.append(fldChar_end)
+        
+        # Set update fields on open flag in document settings
+        self._set_update_fields_on_open()
+        
+        # Add instructional text
+        instruction = self.doc.add_paragraph()
+        instruction_run = instruction.add_run(
+            "\n[Note: The Table of Contents will be automatically generated when you open this document in Microsoft Word. "
+            "If it doesn't appear, right-click and select 'Update Field']"
+        )
+        instruction_run.font.italic = True
+        instruction_run.font.size = Pt(10)
+        instruction_run.font.color.rgb = RGBColor(128, 128, 128)
+        instruction.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        
+        # Add section break (new page) after TOC and restart page numbering
+        new_section = self.doc.add_section()
+        
+        # Set page numbering to start at 1 for content section
+        new_section.start_type = 2  # New page
+        new_section.page_number_start = 1
+    
+    def _set_update_fields_on_open(self):
+        """Set the document to update fields when opened."""
+        try:
+            # Access document settings
+            settings_element = self.doc.settings.element
+            
+            # Create updateFields element if it doesn't exist
+            update_fields = settings_element.find(qn('w:updateFields'))
+            if update_fields is None:
+                update_fields = OxmlElement('w:updateFields')
+                update_fields.set(qn('w:val'), 'true')
+                settings_element.append(update_fields)
+            else:
+                update_fields.set(qn('w:val'), 'true')
+        except Exception as e:
+            # If settings don't exist, create them
+            pass
         
     def add_introduction_section(self, intro_data: Dict[str, Any]):
         """
@@ -385,7 +496,7 @@ class SRSDocumentGenerator:
         self.doc.add_paragraph(user_interfaces.get('description', ''))
         
         # Add user interface diagram
-        if 'user_interfaces' in image_paths and Path(image_paths['user_interfaces']).exists():
+        if 'user_interfaces' in image_paths and image_paths['user_interfaces'] and Path(image_paths['user_interfaces']).exists():
             self.doc.add_paragraph("User Interface Architecture:", style='Heading 3')
             self.doc.add_picture(str(image_paths['user_interfaces']), width=Inches(6.0))
             last_paragraph = self.doc.paragraphs[-1]
@@ -397,7 +508,7 @@ class SRSDocumentGenerator:
         self.doc.add_paragraph(hardware_interfaces.get('description', ''))
         
         # Add hardware interface diagram
-        if 'hardware_interfaces' in image_paths and Path(image_paths['hardware_interfaces']).exists():
+        if 'hardware_interfaces' in image_paths and image_paths['hardware_interfaces'] and Path(image_paths['hardware_interfaces']).exists():
             self.doc.add_paragraph("Hardware Interface Architecture:", style='Heading 3')
             self.doc.add_picture(str(image_paths['hardware_interfaces']), width=Inches(6.0))
             last_paragraph = self.doc.paragraphs[-1]
@@ -409,7 +520,7 @@ class SRSDocumentGenerator:
         self.doc.add_paragraph(software_interfaces.get('description', ''))
         
         # Add software interface diagram
-        if 'software_interfaces' in image_paths and Path(image_paths['software_interfaces']).exists():
+        if 'software_interfaces' in image_paths and image_paths['software_interfaces'] and Path(image_paths['software_interfaces']).exists():
             self.doc.add_paragraph("Software Interface Architecture:", style='Heading 3')
             self.doc.add_picture(str(image_paths['software_interfaces']), width=Inches(6.0))
             last_paragraph = self.doc.paragraphs[-1]
@@ -421,7 +532,7 @@ class SRSDocumentGenerator:
         self.doc.add_paragraph(communication_interfaces.get('description', ''))
         
         # Add communication interface diagram
-        if 'communication_interfaces' in image_paths and Path(image_paths['communication_interfaces']).exists():
+        if 'communication_interfaces' in image_paths and image_paths['communication_interfaces'] and Path(image_paths['communication_interfaces']).exists():
             self.doc.add_paragraph("Communication Interface Architecture:", style='Heading 3')
             self.doc.add_picture(str(image_paths['communication_interfaces']), width=Inches(6.0))
             last_paragraph = self.doc.paragraphs[-1]
@@ -492,9 +603,9 @@ class SRSDocumentGenerator:
         self.doc.add_heading("6. Glossary", level=1)
         
         sections = glossary_data.get('sections', [])
-        for section in sections:
+        for idx, section in enumerate(sections, 1):
             section_title = section.get('title', '')
-            self.doc.add_heading(section_title, level=2)
+            self.doc.add_heading(f"6.{idx} {section_title}", level=2)
             
             terms = section.get('terms', [])
             for term_data in terms:
@@ -552,7 +663,7 @@ def generate_srs_document(
     organization: str = "Organization Name"
 ) -> str:
     """
-    Generate a complete SRS document from JSON data.
+    Generate a complete SRS document from JSON data with Table of Contents.
     
     Args:
         project_name: Name of the project
@@ -604,8 +715,8 @@ def generate_srs_document(
     # Add title page
     generator._add_title_page()
     
-    # Add header and footer
-    generator._add_header_footer()
+    # Add Table of Contents
+    generator._add_table_of_contents()
     
     # Add all sections
     generator.add_introduction_section(introduction_section)
@@ -615,6 +726,9 @@ def generate_srs_document(
     generator.add_nfr_section(nfr_section)
     generator.add_glossary_section(glossary_section)
     generator.add_assumptions_section(assumptions_section)
+    
+    # Add header and footer (must be after all content is added)
+    generator._add_header_footer()
     
     # Save the document
     generator.save(output_path)

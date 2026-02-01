@@ -1,40 +1,54 @@
 Here is your setup guide formatted as a clean, professional README.md style document.
 
-🚀 SRS Generation System Setup
-Follow these steps to get the environment ready for generating Software Requirements Specifications.
+## 🏗 Project Overview
 
-📋 Prerequisites
-Python 3.10+
+The SRS Generation System is designed to automate the creation of Software Requirements Specifications (SRS) using various agents that handle different aspects of the specification process. This system leverages multiple agents to gather information and generate comprehensive SRS documents.
 
-Node.js (Latest LTS version recommended)
+## 🚀 Running the Application
 
-Groq API Key
+To run the application, use the following command:
 
-🛠 Installation Steps
+```bash
+uvicorn srs_engine.main:app --reload
+```
+
+## 📋 Prerequisites
+- Python 3.10+
+- Node.js (Latest LTS version recommended)
+- Groq API Key
+
+## 🛠 Installation Steps
 1. Clone the Repository
-Bash
-git clone https://github.com/smitngandhi/SRS_Generation.git
-cd SRS_generation
+   ```bash
+   git clone https://github.com/smitngandhi/SRS_Generation.git
+   cd SRS_Generation
+   ```
 2. Python Virtual Environment
-It is highly recommended to use a virtual environment to manage dependencies.
+   It is highly recommended to use a virtual environment to manage dependencies.
 
-Bash
-# Create the environment
-python -m venv venv
+   ```bash
+   # Create the environment
+   python -m venv venv
 
-# Activate the environment (Windows)
-venv\Scripts\activate
+   # Activate the environment (Windows)
+   venv\Scripts\activate
 
-# Activate the environment (Mac/Linux)
-source venv/bin/activate
-3. Diagram Rendering Support (Mermaid)
-The system uses Mermaid to generate architecture diagrams. You must install the CLI tool globally via npm.
+   # Activate the environment (Mac/Linux)
+   source venv/bin/activate
+   ```
+3. Install Required Packages
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Diagram Rendering Support (Mermaid)
+   The system uses Mermaid to generate architecture diagrams. You must install the CLI tool globally via npm.
 
-Install Mermaid CLI:
+   Install Mermaid CLI:
 
-Bash
-npm install -g @mermaid-js/mermaid-cli
-Locate the CMD path: Note your local path for configuration (usually required in your settings or .env): C:/Users/<Your Username>/AppData/Roaming/npm/mmdc.cmd
+   ```bash
+   npm install -g @mermaid-js/mermaid-cli
+   ```
+   Locate the CMD path: Note your local path for configuration (usually required in your settings or .env): C:/Users/<Your Username>/AppData/Roaming/npm/mmdc.cmd
 
 ⚙️ Configuration
 Environment Variables
@@ -43,6 +57,7 @@ Create a file named .env in the root directory of the project and populate it wi
 Ini, TOML
 # API Credentials
 GROQ_API_KEY=your_actual_api_key_here
+
 
 # Model Configuration
 GROQ_MODEL=groq/meta-llama/llama-4-scout-17b-16e-instruct
@@ -53,3 +68,8 @@ The following diagram illustrates how your local setup interacts with the Groq A
 Make sure your virtual environment is activated whenever you run the FastAPI server or the generation scripts. If you encounter a mmdc error, ensure that Node.js is correctly added to your system's PATH.
 
 Would you like me to generate a requirements.txt file content based on the Python code you've shared so far?
+
+
+go inside SRS_generation while activating venv 
+and write 
+uvicorn srs_engine.main:app --reload

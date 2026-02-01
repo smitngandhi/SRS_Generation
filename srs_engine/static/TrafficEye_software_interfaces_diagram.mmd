@@ -1,0 +1,5 @@
+graph TB
+App[Go Application Server] -->| Connection Pool | Primary[(PostgreSQL 15<br/>Primary)]
+Primary -.->|Streaming Replication| Replica[(Read Replica)]
+App -->| OAuth 2.0 | Auth0[Auth0 Tenant]
+App -->| API Call | GoogleAnalytics[Google Analytics]
