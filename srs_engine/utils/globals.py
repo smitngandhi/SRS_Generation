@@ -69,7 +69,6 @@ async def create_prompt():
 
 
 async def generated_response(runner, user_id, session_id, prompt):
-
     response = None
     async for event in runner.run_async(
                 user_id=user_id,
@@ -77,8 +76,7 @@ async def generated_response(runner, user_id, session_id, prompt):
                 new_message=prompt,
             ):
                 if event.is_final_response():
-                    print("Final response received: ", event.content.parts[0].text)
-                    
+                    # print("Final response received: ", event.content.parts[0].text)
                     response = event.content.parts[0].text
 
     return response
