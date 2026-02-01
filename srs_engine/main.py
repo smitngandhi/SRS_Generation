@@ -4,11 +4,23 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from google.adk.sessions import InMemorySessionService
 import uuid
-from srs_engine.agents.introduction_agent import create_introduction_agent , introduction_agent
-from srs_engine.agents.overall_description_agent import create_overall_description_agent , overall_description_agent
+from srs_engine.agents.introduction_agent import create_introduction_agent 
+from srs_engine.agents.overall_description_agent import create_overall_description_agent 
+from srs_engine.agents.system_features_agent import create_system_features_agent
+from srs_engine.agents.external_interfaces_agent import create_external_interfaces_agent
+from srs_engine.agents.nfr_agent import create_nfr_agent
 from srs_engine.schemas.srs_input_schema import SRSRequest
-from srs_engine.utils.globals import create_session , create_runner , create_prompt , generated_response , get_session , clean_and_parse_json
+from srs_engine.utils.globals import (
+    create_session , 
+    create_runner , 
+    create_prompt , 
+    generated_response , 
+    get_session , 
+    clean_and_parse_json,
+    clean_interface_diagrams,
+    render_mermaid_png)
 from google.adk.agents import SequentialAgent , ParallelAgent
+from pathlib import Path
 
 app = FastAPI()
 
@@ -33,7 +45,10 @@ async def create_srs_agent():
                     name = "parallel_agent",
                     sub_agents = [
                          create_introduction_agent(),
-                         create_overall_description_agent()
+                         create_overall_description_agent(),
+                         create_system_features_agent(),
+                         create_external_interfaces_agent(),
+                         create_nfr_agent()
                     ],
                     description = "This agent handles the generation of the Introduction and Overall Description sections of the SRS document."
                )
@@ -55,7 +70,7 @@ async def root(request: Request):
 @app.post("/generate_srs")
 async def generate_srs(srs_data: SRSRequest):
 
-    
+
     print("Received SRS Data: ", srs_data)
     session_id = str(uuid.uuid4())
 
@@ -98,11 +113,37 @@ async def generate_srs(srs_data: SRSRequest):
     print("Introduction Section: ", introduction_section)
     overall_description_section = clean_and_parse_json(session.state.get("overall_description_section", {}))
     print("Overall Description Section: ", overall_description_section)
+    system_features_section = clean_and_parse_json(session.state.get("system_features_section", {}))
+    print("System Features Section: ", system_features_section)
+    external_interfaces_section = clean_interface_diagrams(clean_and_parse_json(session.state.get("external_interfaces_section", {})))
+    print("External Interfaces Section: ", external_interfaces_section)
+
+
+    user_interfaces_path = Path(f"./srs_engine/static/{project_name}_user_interfaces_diagram.png")
+    hardware_interfaces_path = Path(f"./srs_engine/static/{project_name}_hardware_interfaces_diagram.png")
+    software_interfaces_path = Path(f"./srs_engine/static/{project_name}_software_interfaces_diagram.png")
+    communication_interfaces_path = Path(f"./srs_engine/static/{project_name}_communication_interfaces_diagram.png")
+
+
+    render_mermaid_png(external_interfaces_section['user_interfaces']['interface_diagram']['code'], user_interfaces_path)
+    print("Rendered user interfaces diagram at: ", user_interfaces_path)
+    render_mermaid_png(external_interfaces_section['hardware_interfaces']['interface_diagram']['code'], hardware_interfaces_path)
+    print("Rendered hardware interfaces diagram at: ", hardware_interfaces_path)
+    render_mermaid_png(external_interfaces_section['software_interfaces']['interface_diagram']['code'], software_interfaces_path)
+    print("Rendered software interfaces diagram at: ", software_interfaces_path)
+    render_mermaid_png(external_interfaces_section['communication_interfaces']['interface_diagram']['code'], communication_interfaces_path)
+    print("Rendered communication interfaces diagram at: ", communication_interfaces_path)
+
+
+    nfr_section = clean_and_parse_json(session.state.get("nfr_section", {}))
+    print("Non-Functional Requirements Section: ", nfr_section)
+
+
 
     return {
         "introduction_section": introduction_section,
         "overall_description_section": overall_description_section,
-        "full_response": response
+        "full_response": response, 
     }
 
 

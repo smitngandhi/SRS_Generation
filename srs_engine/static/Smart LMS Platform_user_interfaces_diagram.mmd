@@ -1,0 +1,7 @@
+graph TB
+User((End User)) -->| HTTPS/443 | CDN[CloudFront CDN]
+CDN --> LB[ALB Load Balancer]
+LB --> React[React SPA<br/>Nginx Port 3000]
+React -->| REST API | Gateway[API Gateway<br/>Kong]
+Gateway -->| JWT Validation | Auth[Auth Service]
+React -->| WebSocket WSS | RT[Real-time Service<br/>Socket.io]

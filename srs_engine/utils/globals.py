@@ -1,8 +1,9 @@
 from google.genai import types
 from google.adk.runners import Runner
 from google.adk.agents import SequentialAgent , ParallelAgent
-import json
-import re
+import json , shutil , re , subprocess
+from pathlib import Path
+
 
 
 
@@ -101,15 +102,10 @@ def clean_and_parse_json(raw_response):
             lines = lines[:-1]
         cleaned = "\n".join(lines).strip()
     
-    # 2. FIX: Handle unescaped control characters (Newlines/Tabs) 
-    # This replaces literal newlines inside the string with escaped '\n'
-    # but only if they are not the start of a new JSON key/structure.
     try:
         return json.loads(cleaned)
     except json.JSONDecodeError:
         try:
-            # More aggressive cleaning: remove actual control characters
-            # except those that are part of JSON structure
             cleaned = re.sub(r"[\x00-\x1F\x7F]", " ", cleaned) 
             return json.loads(cleaned)
         except json.JSONDecodeError as e:
@@ -126,3 +122,137 @@ async def get_session(session_service_stateful ,app_name , user_id , session_id)
     )
     
 
+
+
+def sanitize_mermaid_output(text: str) -> str | None:
+    if not text or not isinstance(text, str):
+        return None
+
+    lowered = text.lower()
+
+    refusal_markers = [
+        "i can't help",
+        "i cannot help",
+        "sorry",
+        "unable to",
+        "as an ai",
+        "cannot generate"
+    ]
+    if any(marker in lowered for marker in refusal_markers):
+        return None
+
+    # Remove markdown fences
+    text = text.strip()
+    text = re.sub(r"^```[a-zA-Z]*", "", text)
+    text = re.sub(r"```$", "", text)
+
+    lines = text.splitlines()
+    cleaned_lines = []
+
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+
+        # Normalize labeled arrows
+        line = re.sub(
+            r"(.*?)-->\s*\|\s*(.*?)\s*\|\s*(.*)",
+            r"\1-->| \2 | \3",
+            line
+        )
+
+        # Normalize arrow variants
+        line = re.sub(r"-{3,}>", "-->", line)
+        line = re.sub(r"<-{3,}", "<--", line)
+        line = re.sub(r"==>", "-->", line)
+
+        cleaned_lines.append(line)
+
+    if not cleaned_lines:
+        return None
+
+    first = cleaned_lines[0]
+    valid_headers = (
+        "flowchart", "graph", "erDiagram",
+        "sequenceDiagram", "stateDiagram", "classDiagram"
+    )
+
+    if not first.startswith(valid_headers):
+        cleaned_lines.insert(0, "flowchart LR")
+
+    return "\n".join(cleaned_lines)
+
+
+
+
+def clean_interface_diagrams(external_interfaces: dict) -> dict:
+    """
+    Iterates through the external_interfaces dictionary, cleans the mermaid code 
+    for each interface type, and returns the updated dictionary.
+    """
+    # Define the keys to check within the dictionary
+    interface_keys = [
+        "user_interfaces",
+        "hardware_interfaces",
+        "software_interfaces",
+        "communication_interfaces"
+    ]
+
+    for key in interface_keys:
+        # Check if the key and the nested path exist to avoid KeyErrors
+        try:
+            raw_code = external_interfaces[key]["interface_diagram"]["code"]
+            
+            # Use your existing sanitize function
+            cleaned_code = sanitize_mermaid_output(raw_code)
+            
+            if cleaned_code:
+                # Store the cleaned code back into the dictionary
+                external_interfaces[key]["interface_diagram"]["code"] = cleaned_code
+            else:
+                # Optional: Provide a minimal valid fallback if sanitization returns None
+                external_interfaces[key]["interface_diagram"]["code"] = "flowchart LR\n    N/A[No Interface Defined]"
+        
+        except (KeyError, TypeError):
+            # Skip if the specific interface section is missing from the input
+            continue
+
+    return external_interfaces
+
+
+def render_mermaid_png(mermaid_code: str, output_png: Path):
+    """
+    Renders Mermaid code into a PNG file using mmdc (npm).
+    """
+    # Check if mmdc is available
+    if not shutil.which("mmdc"):
+        raise FileNotFoundError(
+            "mmdc command not found. Please install it using: npm install -g @mermaid-js/mermaid-cli"
+        )
+    
+    output_png.parent.mkdir(parents=True, exist_ok=True)
+    mmd_path = output_png.with_suffix(".mmd")
+
+    with open(mmd_path, "w", encoding="utf-8") as f:
+        f.write(mermaid_code)
+
+    css_path = Path("srs_engine/static/custom-diagram.css")
+
+    cmd = [
+        "C:\\Users\\Smit\\AppData\\Roaming\\npm\\mmdc.CMD",
+        "-i", str(mmd_path),
+        "-o", str(output_png),
+        "-w", "2400",
+        "-H", "1600",
+        "-t", "forest",
+        "-b", "white",
+        "-s", "2"
+    ]
+
+
+    try:
+        subprocess.run(cmd, check=True, capture_output=True, text=True)
+        print(f"✅ Mermaid diagram saved: {output_png}")
+    except subprocess.CalledProcessError as e:
+        print(f"❌ mmdc error: {e.stderr}")
+        raise
