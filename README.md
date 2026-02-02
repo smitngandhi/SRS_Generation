@@ -1,75 +1,217 @@
-Here is your setup guide formatted as a clean, professional README.md style document.
+# 🚀 SRS Generation System
 
-## 🏗 Project Overview
 
-The SRS Generation System is designed to automate the creation of Software Requirements Specifications (SRS) using various agents that handle different aspects of the specification process. This system leverages multiple agents to gather information and generate comprehensive SRS documents.
 
-## 🚀 Running the Application
+## 🎯 Overview
 
-To run the application, use the following command:
+An intelligent multi-agent system that automates SRS creation using **Groq's free API**. Built with FastAPI, it generates professional IEEE 830-1998 compliant documents complete with Mermaid diagrams - all in minutes!
 
+**Key Features:**
+- 🤖 7 Specialized AI agents for different SRS sections
+- ⚡ Powered by Groq's lightning-fast LLM inference
+- 📄 Professional `.docx` output with architecture diagrams
+- 🆓 100% Free - No billing required
+- 🔒 Runs locally - Your data stays private
+
+---
+
+## 📦 Prerequisites
+
+| Requirement | Version | Download |
+|------------|---------|----------|
+| Python | 3.10+ | [Download](https://www.python.org/downloads/) |
+| Node.js | Latest LTS | [Download](https://nodejs.org/) |
+| Git | Latest | [Download](https://git-scm.com/downloads/) |
+| Groq API Key | Free | [Get Key](https://console.groq.com/keys) |
+
+---
+
+## 🛠 Installation
+
+### Step 1: Clone Repository
+```bash
+git clone https://github.com/smitngandhi/SRS_Generation.git
+cd SRS_Generation
+```
+
+### Step 2: Create Virtual Environment
+
+**Windows:**
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
+
+**macOS/Linux:**
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+> 💡 You'll see `(venv)` in your terminal when activated
+
+### Step 3: Install Python Dependencies
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+### Step 4: Install Mermaid CLI
+```bash
+npm install -g @mermaid-js/mermaid-cli
+mmdc --version  # Verify installation
+```
+
+---
+
+## ⚙️ Configuration
+
+### 1. Get Your Free Groq API Key
+1. Visit [console.groq.com/keys](https://console.groq.com/keys)
+2. Sign up (no billing required!)
+3. Create API Key
+4. Copy your key
+
+### 2. Create `.env` File
+
+**Windows:**
+```bash
+type nul > .env
+```
+
+**macOS/Linux:**
+```bash
+touch .env
+```
+
+### 3. Add Configuration
+
+Open `.env` and add:
+
+```ini
+# Groq API Key (Required)
+GROQ_API_KEY=your_actual_api_key_here
+
+# Model Selection (Required)
+GROQ_MODEL=groq/meta-llama/llama-4-scout-17b-16e-instruct
+```
+
+**Available Models:** [Groq Models Docs](https://console.groq.com/docs/models)
+
+| Model | Format | Best For |
+|-------|--------|----------|
+| Llama 4 Scout 17B | `groq/meta-llama/llama-4-scout-17b-16e-instruct` | ⭐ Recommended |
+| Llama 3.3 70B | `groq/meta-llama/llama-3.3-70b-versatile` | High Quality |
+| Llama 3.1 8B | `groq/meta-llama/llama-3.1-8b-instant` | Fast Speed |
+
+---
+
+## 🚀 Usage
+
+### 1. Start Server
 ```bash
 uvicorn srs_engine.main:app --reload
 ```
 
-## 📋 Prerequisites
-- Python 3.10+
-- Node.js (Latest LTS version recommended)
-- Groq API Key
+### 2. Open Web Interface
+Navigate to: **http://127.0.0.1:8000**
 
-## 🛠 Installation Steps
-1. Clone the Repository
-   ```bash
-   git clone https://github.com/smitngandhi/SRS_Generation.git
-   cd SRS_Generation
-   ```
-2. Python Virtual Environment
-   It is highly recommended to use a virtual environment to manage dependencies.
+### 3. Enter Project Details
+Fill in the form:
+- Project Name
+- Project Description
+- Key Features
+- Target Users
+- Technology Stack (optional)
 
-   ```bash
-   # Create the environment
-   python -m venv venv
+### 4. Generate SRS
+Click "Generate SRS" and wait 2-5 minutes
 
-   # Activate the environment (Windows)
-   venv\Scripts\activate
+### 5. Access Generated Files
 
-   # Activate the environment (Mac/Linux)
-   source venv/bin/activate
-   ```
-3. Install Required Packages
-   ```bash
-   pip install -r requirements.txt
-   ```
-4. Diagram Rendering Support (Mermaid)
-   The system uses Mermaid to generate architecture diagrams. You must install the CLI tool globally via npm.
+**SRS Document:**
+```
+srs_engine/generated_srs/{project_name}_SRS.docx
+```
 
-   Install Mermaid CLI:
+**Architecture Diagrams:**
+```
+srs_engine/static/{project_name}_user_interfaces_diagram.png
+srs_engine/static/{project_name}_hardware_interfaces_diagram.png
+srs_engine/static/{project_name}_software_interfaces_diagram.png
+srs_engine/static/{project_name}_communication_interfaces_diagram.png
+```
 
-   ```bash
-   npm install -g @mermaid-js/mermaid-cli
-   ```
-   Locate the CMD path: Note your local path for configuration (usually required in your settings or .env): C:/Users/<Your Username>/AppData/Roaming/npm/mmdc.cmd
+---
 
-⚙️ Configuration
-Environment Variables
-Create a file named .env in the root directory of the project and populate it with the following:
+## 🔧 Troubleshooting
 
-Ini, TOML
-# API Credentials
-GROQ_API_KEY=your_actual_api_key_here
+**`mmdc: command not found`**
+```bash
+npm install -g @mermaid-js/mermaid-cli
+# Add Node.js to PATH if needed
+```
 
+**`ModuleNotFoundError`**
+```bash
+# Activate venv first!
+pip install -r requirements.txt
+```
 
-# Model Configuration
-GROQ_MODEL=groq/meta-llama/llama-4-scout-17b-16e-instruct
-🏗 System Architecture
-The following diagram illustrates how your local setup interacts with the Groq API and Mermaid CLI.
+**API Key Error (401)**
+- Verify key at [console.groq.com/keys](https://console.groq.com/keys)
+- Check `.env` is in root directory
+- No spaces/quotes around the key
 
-📝 Usage Note
-Make sure your virtual environment is activated whenever you run the FastAPI server or the generation scripts. If you encounter a mmdc error, ensure that Node.js is correctly added to your system's PATH.
+**Port 8000 in use**
+```bash
+uvicorn srs_engine.main:app --reload --port 8001
+```
 
-Would you like me to generate a requirements.txt file content based on the Python code you've shared so far?
+---
 
+## 📁 Project Structure
 
-go inside SRS_generation while activating venv 
-and write 
-uvicorn srs_engine.main:app --reload
+```
+SRS_Generation/
+├── srs_engine/
+│   ├── agents/              # 7 specialized AI agents
+│   ├── schemas/             # Pydantic models
+│   ├── utils/               # Document generator
+│   ├── templates/           # Web interface
+│   ├── static/              # Generated diagrams
+│   ├── generated_srs/       # Output documents
+│   └── main.py              # FastAPI app
+├── .env                     # Your configuration
+├── requirements.txt         # Dependencies
+└── README.md
+```
+
+---
+
+## 🤝 Contributing
+
+Contributions welcome! Please:
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/name`)
+3. Commit changes (`git commit -m 'Add feature'`)
+4. Push to branch (`git push origin feature/name`)
+5. Open Pull Request
+
+---
+
+## 🙏 Acknowledgments
+
+Built with: [FastAPI](https://fastapi.tiangolo.com/) • [Groq](https://groq.com/) • [Mermaid](https://mermaid.js.org/) • [python-docx](https://python-docx.readthedocs.io/)
+
+---
+
+<div align="center">
+
+**Made with ❤️ by [Smit Gandhi](https://github.com/smitngandhi)**
+
+⭐ Star this repo if you find it helpful!
+
+[Report Bug](https://github.com/smitngandhi/SRS_Generation/issues) • [Request Feature](https://github.com/smitngandhi/SRS_Generation/issues)
+
+</div>

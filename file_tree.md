@@ -51,38 +51,7 @@
 │   │   ├── 🐍 srs_input_schema.py
 │   │   └── 🐍 system_features_schema.py
 │   ├── 📁 static
-│   │   ├── 📄 HireSmart_communication_interfaces_diagram.mmd
-│   │   ├── 🖼️ HireSmart_communication_interfaces_diagram.png
-│   │   ├── 📄 HireSmart_hardware_interfaces_diagram.mmd
-│   │   ├── 🖼️ HireSmart_hardware_interfaces_diagram.png
-│   │   ├── 📄 HireSmart_software_interfaces_diagram.mmd
-│   │   ├── 🖼️ HireSmart_software_interfaces_diagram.png
-│   │   ├── 📄 HireSmart_user_interfaces_diagram.mmd
-│   │   ├── 🖼️ HireSmart_user_interfaces_diagram.png
-│   │   ├── 📄 SentimentScope_communication_interfaces_diagram.mmd
-│   │   ├── 🖼️ SentimentScope_communication_interfaces_diagram.png
-│   │   ├── 📄 SentimentScope_hardware_interfaces_diagram.mmd
-│   │   ├── 🖼️ SentimentScope_hardware_interfaces_diagram.png
-│   │   ├── 📄 SentimentScope_software_interfaces_diagram.mmd
-│   │   ├── 🖼️ SentimentScope_software_interfaces_diagram.png
-│   │   ├── 📄 SentimentScope_user_interfaces_diagram.mmd
-│   │   ├── 🖼️ SentimentScope_user_interfaces_diagram.png
-│   │   ├── 📄 Smart LMS Platform_communication_interfaces_diagram.mmd
-│   │   ├── 🖼️ Smart LMS Platform_communication_interfaces_diagram.png
-│   │   ├── 📄 Smart LMS Platform_hardware_interfaces_diagram.mmd
-│   │   ├── 🖼️ Smart LMS Platform_hardware_interfaces_diagram.png
-│   │   ├── 📄 Smart LMS Platform_software_interfaces_diagram.mmd
-│   │   ├── 🖼️ Smart LMS Platform_software_interfaces_diagram.png
-│   │   ├── 📄 Smart LMS Platform_user_interfaces_diagram.mmd
-│   │   ├── 🖼️ Smart LMS Platform_user_interfaces_diagram.png
-│   │   ├── 📄 TrafficEye_communication_interfaces_diagram.mmd
-│   │   ├── 🖼️ TrafficEye_communication_interfaces_diagram.png
-│   │   ├── 📄 TrafficEye_hardware_interfaces_diagram.mmd
-│   │   ├── 🖼️ TrafficEye_hardware_interfaces_diagram.png
-│   │   ├── 📄 TrafficEye_software_interfaces_diagram.mmd
-│   │   ├── 🖼️ TrafficEye_software_interfaces_diagram.png
-│   │   ├── 📄 TrafficEye_user_interfaces_diagram.mmd
-│   │   ├── 🖼️ TrafficEye_user_interfaces_diagram.png
+│   │   ├── [Generated Images and .mmd files]
 │   │   ├── 🎨 home.css
 │   │   └── 📄 home.js
 │   ├── 📁 templates
