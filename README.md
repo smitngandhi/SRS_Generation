@@ -1,6 +1,9 @@
 # 🚀 SRS Generation System
 
 
+**AI-powered automated Software Requirements Specification (SRS) document generator with architecture diagrams**
+
+---
 
 ## 🎯 Overview
 
@@ -61,6 +64,28 @@ pip install -r requirements.txt
 npm install -g @mermaid-js/mermaid-cli
 mmdc --version  # Verify installation
 ```
+
+> **⚠️ CRITICAL for Windows Users**: After installation, you **MUST** configure the Mermaid CLI path in the code.
+
+**Windows Configuration:**
+1. Locate your Mermaid CLI installation path (typically):
+   ```
+   C:\Users\<Your Username>\AppData\Roaming\npm\mmdc.cmd
+   ```
+
+2. Open `srs_engine/utils/globals.py` and update the `render_mermaid_png` function:
+   ```python
+   # Find the subprocess.run line and update it to:
+   subprocess.run([
+       "C:\\Users\\<Your Username>\\AppData\\Roaming\\npm\\mmdc.cmd",
+       "-i", str(mmd_path),
+       "-o", str(output_path)
+   ], check=True)
+   ```
+
+3. Replace `<Your Username>` with your actual Windows username
+
+**Without this configuration, diagram generation will fail on Windows!**
 
 ---
 
@@ -168,6 +193,22 @@ pip install -r requirements.txt
 uvicorn srs_engine.main:app --reload --port 8001
 ```
 
+**Diagrams not generating (Windows)**
+```bash
+# ⚠️ CRITICAL: Windows users must configure mmdc path
+# Open srs_engine/utils/globals.py
+# Find render_mermaid_png function and update subprocess.run to:
+
+subprocess.run([
+    "C:\\Users\\<Your Username>\\AppData\\Roaming\\npm\\mmdc.cmd",
+    "-i", str(mmd_path),
+    "-o", str(output_path)
+], check=True)
+
+# Replace <Your Username> with your actual Windows username
+# Without this, mmdc won't be found even if installed correctly
+```
+
 ---
 
 ## 📁 Project Structure
@@ -199,6 +240,7 @@ Contributions welcome! Please:
 5. Open Pull Request
 
 ---
+
 
 ## 🙏 Acknowledgments
 
