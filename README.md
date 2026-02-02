@@ -1,7 +1,14 @@
 # 🚀 SRS Generation System
 
+<div align="center">
+
+![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
+![FastAPI](https://img.shields.io/badge/FastAPI-latest-green.svg)
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
 **AI-powered automated Software Requirements Specification (SRS) document generator with architecture diagrams**
+
+</div>
 
 ---
 
@@ -15,6 +22,14 @@ An intelligent multi-agent system that automates SRS creation using **Groq's fre
 - 📄 Professional `.docx` output with architecture diagrams
 - 🆓 100% Free - No billing required
 - 🔒 Runs locally - Your data stays private
+
+---
+
+## 📸 Screenshots
+
+![Web Interface](image-3.png)
+![Web Interface](image-4.png)
+![Web Interface](image-5.png)
 
 ---
 
@@ -241,6 +256,11 @@ Contributions welcome! Please:
 
 ---
 
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file
+
+---
 
 ## 🙏 Acknowledgments
 
