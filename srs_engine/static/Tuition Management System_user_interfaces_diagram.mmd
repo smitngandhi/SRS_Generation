@@ -1,0 +1,12 @@
+graph TB
+Admin((Administrator)) -->| HTTPS/443 | CDN[CloudFront CDN]
+Teacher((Teacher)) -->| HTTPS/443 | CDN
+Student((Student)) -->| HTTPS/443 | CDN
+Parent((Parent)) -->| HTTPS/443 | CDN
+CDN --> LB[Load Balancer<br/>NGINX]
+LB --> React[React Dashboard<br/>Port 3000]
+React -->| GraphQL | Gateway[GraphQL Gateway<br/>Apollo]
+Gateway -->| JWT Auth | Auth[Auth Service<br/>Python Flask]
+React -->| WebSocket | WS[Notification Service<br/>Socket.io]
+React -->| Role-Based Access | RBAC[(RBAC Config)]
+React -->| Local Storage | Local[(Local Storage)]

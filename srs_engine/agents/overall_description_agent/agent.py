@@ -5,14 +5,13 @@ from google.adk.models.lite_llm import LiteLlm
 from .prompt import AGENT_DESCRIPTION , AGENT_INSTRUCTION
 from ...schemas.introduction_schema import IntroductionSection
 from ...utils.globals import generate_content_config
+from ...utils.llm_config import get_configured_model
 
 load_dotenv(find_dotenv())
 
-GROQ_MODEL = os.getenv("GROQ_MODEL")
+MODEL = get_configured_model()
 
-groq_llm = LiteLlm(
-    model=GROQ_MODEL
-)
+llm = LiteLlm(model=MODEL)
 
 
 # ==================================================
@@ -21,7 +20,7 @@ groq_llm = LiteLlm(
 
 overall_description_agent = LlmAgent(
     name="overall_description_agent",
-    model=groq_llm,
+    model=llm,
     # output_schema=IntroductionSection,
     description=AGENT_DESCRIPTION,
     instruction=AGENT_INSTRUCTION,
@@ -35,7 +34,7 @@ overall_description_agent = LlmAgent(
 def create_overall_description_agent():
     return LlmAgent(
         name="overall_description_agent",
-        model=groq_llm,
+        model=llm,
         # output_schema=IntroductionSection,
         description=AGENT_DESCRIPTION,
         instruction=AGENT_INSTRUCTION,

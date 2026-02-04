@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SRS Generator - Project Information</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Merriweather:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', path='home.css') }}">
 </head>
 <body>
@@ -53,7 +56,17 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="problem_statement" class="required">Problem Statement</label>
+                    <div class="field-header">
+                        <label for="problem_statement" class="required">Problem Statement</label>
+                        <button
+                            type="button"
+                            class="btn btn-ai"
+                            data-enhance-target="problem_statement"
+                            data-section-type="Problem Statement"
+                        >
+                            AI Enhance
+                        </button>
+                    </div>
                     <textarea 
                         id="problem_statement" 
                         name="problem_statement" 
@@ -144,7 +157,17 @@
                 <h2 class="section-title">Functional Scope</h2>
                 
                 <div class="form-group">
-                    <label for="core_features" class="required">Core Features</label>
+                    <div class="field-header">
+                        <label for="core_features" class="required">Core Features</label>
+                        <button
+                            type="button"
+                            class="btn btn-ai"
+                            data-enhance-target="core_features"
+                            data-section-type="Core Features"
+                        >
+                            AI Enhance
+                        </button>
+                    </div>
                     <textarea 
                         id="core_features" 
                         name="core_features" 
@@ -156,7 +179,17 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="primary_user_flow">Primary User Flow</label>
+                    <div class="field-header">
+                        <label for="primary_user_flow">Primary User Flow</label>
+                        <button
+                            type="button"
+                            class="btn btn-ai"
+                            data-enhance-target="primary_user_flow"
+                            data-section-type="Primary User Flow"
+                        >
+                            AI Enhance
+                        </button>
+                    </div>
                     <textarea 
                         id="primary_user_flow" 
                         name="primary_user_flow" 

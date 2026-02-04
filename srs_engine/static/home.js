@@ -1,6 +1,62 @@
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("srsForm");
 
+    // ---------- AI Enhancement Buttons ----------
+    const enhanceButtons = document.querySelectorAll(
+        'button.btn-ai[data-enhance-target][data-section-type]'
+    );
+
+    const setButtonLoading = (btn, isLoading) => {
+        if (!btn) return;
+        btn.disabled = isLoading;
+        btn.textContent = isLoading ? "Enhancing..." : "AI Enhance";
+    };
+
+    enhanceButtons.forEach((btn) => {
+        btn.addEventListener("click", async () => {
+            const targetId = btn.dataset.enhanceTarget;
+            const sectionType = btn.dataset.sectionType;
+            const targetEl = document.getElementById(targetId);
+
+            if (!targetEl) return;
+
+            const userInput = (targetEl.value || "").trim();
+            if (!userInput) {
+                alert("Please enter some text to enhance first.");
+                return;
+            }
+
+            setButtonLoading(btn, true);
+            try {
+                const response = await fetch("/enhance_section", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        section_type: sectionType,
+                        user_input: userInput
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Server returned ${response.status}: ${errorText}`);
+                }
+
+                const result = await response.json();
+                if (!result?.content) {
+                    throw new Error("Enhancement response missing content.");
+                }
+
+                targetEl.value = result.content;
+            } catch (error) {
+                console.error("Enhancement error:", error);
+                alert(`Failed to enhance content: ${error.message}`);
+            } finally {
+                setButtonLoading(btn, false);
+            }
+        });
+    });
+
     // Show/hide custom input for Target Users
     const targetUsersOtherCheck = document.getElementById("target_users_other_check");
     const targetUsersCustomInput = document.getElementById("target_users_custom");
@@ -53,6 +109,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const formData = new FormData(form);
 
         // ---------- Helper Functions ----------
+        const stripListMarker = (text) => {
+            if (!text) return "";
+            return text
+                .replace(/^\s*([-*•]+|[–—])\s+/, "") // bullets
+                .replace(/^\s*\d+\s*[\.\)]\s+/, "") // 1. / 1)
+                .trim();
+        };
+
         const getCheckedValues = (name) =>
             Array.from(document.querySelectorAll(`input[name="${name}"]:checked`))
                 .map(el => el.value)
@@ -60,7 +124,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const splitToArray = (value) =>
             value
-                ? value.split(/[\n,]/).map(v => v.trim()).filter(Boolean)
+                ? value
+                    .split(/[\n,]/)
+                    .map(v => stripListMarker(v))
+                    .filter(Boolean)
                 : [];
 
         // ---------- Target Users ----------
@@ -187,4 +254,3 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
-

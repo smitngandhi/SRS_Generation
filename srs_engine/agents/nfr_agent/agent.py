@@ -5,15 +5,14 @@ from google.adk.models.lite_llm import LiteLlm
 from .prompt import AGENT_DESCRIPTION , AGENT_INSTRUCTION
 from ...schemas.nfr_schema import NonFunctionalRequirementsSection
 from ...utils.globals import generate_content_config
+from ...utils.llm_config import get_configured_model
 
 
 load_dotenv(find_dotenv())
 
-GROQ_MODEL = os.getenv("GROQ_MODEL")
+MODEL = get_configured_model()
 
-groq_llm = LiteLlm(
-    model=GROQ_MODEL
-)
+llm = LiteLlm(model=MODEL)
 
 
 # ==================================================
@@ -22,7 +21,7 @@ groq_llm = LiteLlm(
 
 nfr_agent = LlmAgent(
     name="nfr_agent",
-    model=groq_llm,
+    model=llm,
     output_schema=NonFunctionalRequirementsSection,
     description=AGENT_DESCRIPTION,
     instruction=AGENT_INSTRUCTION,
@@ -36,7 +35,7 @@ nfr_agent = LlmAgent(
 def create_nfr_agent():
     return LlmAgent(
     name="nfr_agent",
-    model=groq_llm,
+    model=llm,
     output_schema=NonFunctionalRequirementsSection,
     description=AGENT_DESCRIPTION,
     instruction=AGENT_INSTRUCTION,

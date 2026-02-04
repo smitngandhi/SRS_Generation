@@ -6,15 +6,14 @@ from srs_engine.schemas.glossary_schema import GlossarySection
 from .prompt import AGENT_DESCRIPTION , AGENT_INSTRUCTION
 from ...schemas.assumptions_schema import AssumptionsSection
 from ...utils.globals import generate_content_config
+from ...utils.llm_config import get_configured_model
 
 
 load_dotenv(find_dotenv())
 
-GROQ_MODEL = os.getenv("GROQ_MODEL")
+MODEL = get_configured_model()
 
-groq_llm = LiteLlm(
-    model=GROQ_MODEL
-)
+llm = LiteLlm(model=MODEL)
 
 
 # ==================================================
@@ -23,7 +22,7 @@ groq_llm = LiteLlm(
 
 assumptions_agent = LlmAgent(
     name="assumptions_agent",
-    model=groq_llm,
+    model=llm,
     output_schema=AssumptionsSection,
     description=AGENT_DESCRIPTION,
     instruction=AGENT_INSTRUCTION,
@@ -37,7 +36,7 @@ assumptions_agent = LlmAgent(
 def create_assumptions_agent():
     return LlmAgent(
     name="assumptions_agent",
-    model=groq_llm,
+    model=llm,
     output_schema=AssumptionsSection,
     description=AGENT_DESCRIPTION,
     instruction=AGENT_INSTRUCTION,

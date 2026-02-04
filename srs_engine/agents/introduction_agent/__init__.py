@@ -1,1 +1,4 @@
-from .agent import introduction_agent , create_introduction_agent
+"""Introduction agent package.
+
+Prompt templates live in `prompt.py`. The app runs direct Groq/Gemini calls.
+"""

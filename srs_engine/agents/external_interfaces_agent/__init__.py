@@ -1,1 +1,4 @@
-from .agent import create_external_interfaces_agent
+"""External Interfaces agent package.
+
+Prompt templates live in `prompt.py`. The app runs direct Groq/Gemini calls.
+"""
