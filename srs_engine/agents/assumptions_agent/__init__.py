@@ -1,1 +1,4 @@
-from .agent import create_assumptions_agent
+"""Assumptions agent package.
+
+Prompt templates live in `prompt.py`. The app runs direct Groq/Gemini calls.
+"""

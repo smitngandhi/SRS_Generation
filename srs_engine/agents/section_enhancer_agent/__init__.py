@@ -1,4 +1,4 @@
-"""System Features agent package.
+"""Section enhancer agent package.
 
 Prompt templates live in `prompt.py`. The app runs direct Groq/Gemini calls.
 """

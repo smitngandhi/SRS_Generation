@@ -1,0 +1,13 @@
+graph TB
+U[End User / Manager] -->| HTTPS (TLS 1.3) JSON | MA[Mobile App\nReact Native]
+MA -->| REST/HTTPS JSON | LB[Load Balancer\nHAProxy]
+LB -->| Route | AG[API Gateway\nKong]
+AG --> Auth[Authentication Service\nOAuth2 + JWT]
+AG --> Pay[Payment Service\nStripe Integration]
+AG --> Att[Attendance Service]
+AG --> Fee[Fee Management Service]
+Auth --> DB[PostgreSQL 15\nPrimary + Read Replicas]
+Pay --> Stripe[Stripe Payment Intent API v2023-10-16]
+Att --> DB
+Fee --> DB
+DB --> Redis[Redis Cache\nTTL 5 min]

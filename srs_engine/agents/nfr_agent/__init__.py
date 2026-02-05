@@ -1,1 +1,4 @@
-from .agent import create_nfr_agent
+"""Non-Functional Requirements agent package.
+
+Prompt templates live in `prompt.py`. The app runs direct Groq/Gemini calls.
+"""

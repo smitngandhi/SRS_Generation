@@ -1,1 +1,4 @@
-from .agent import overall_description_agent , create_overall_description_agent
+"""Overall Description agent package.
+
+Prompt templates live in `prompt.py`. The app runs direct Groq/Gemini calls.
+"""

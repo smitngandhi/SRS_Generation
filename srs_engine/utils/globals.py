@@ -1,7 +1,5 @@
 from google.genai import types
-from google.adk.runners import Runner
-from google.adk.agents import SequentialAgent , ParallelAgent
-import json , shutil , re , subprocess
+import json , shutil , re , subprocess, os
 from pathlib import Path
 
 
@@ -9,77 +7,27 @@ from pathlib import Path
 
 
 generate_content_config = types.GenerateContentConfig(
-        # 🔒 Enforce machine-readable output
-        response_mime_type="application/json",
-
-        # 🎯 Deterministic output (best for schemas)
-        temperature=0.0,
-
-
-        # 🚫 Reduce refusals / partial responses
-        safety_settings=[
-            types.SafetySetting(
-                category=types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-                threshold=types.HarmBlockThreshold.OFF,
-            ),
-            types.SafetySetting(
-                category=types.HarmCategory.HARM_CATEGORY_HARASSMENT,
-                threshold=types.HarmBlockThreshold.OFF,
-            ),
-            types.SafetySetting(
-                category=types.HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-                threshold=types.HarmBlockThreshold.OFF,
-            ),
-            types.SafetySetting(
-                category=types.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-                threshold=types.HarmBlockThreshold.OFF,
-            ),
-        ],
-    )
-
-
-
-async def create_session(session_service_stateful , app_name: str, user_id: str, session_id: int , intitial_state: dict):
-    """Create a session for the user"""
-    await session_service_stateful.create_session(
-        app_name=app_name,
-        user_id=user_id,
-        session_id=session_id,
-        state=intitial_state
-    )
-
-
-async def create_runner(agent, app_name, session_service_stateful):
-    """Create a runner for the agent"""
-    return Runner(
-        app_name=app_name,
-        agent=agent,
-        session_service=session_service_stateful
-    )
-
-
-async def create_prompt():
-    """Create a prompt for the agent"""
-    return types.Content(
-        role="user",
-        parts=[types.Part(
-            text="Based on the provided SRS data, generate the SRS document as per the schema."
-        )]
-    )
-
-
-async def generated_response(runner, user_id, session_id, prompt):
-    response = None
-    async for event in runner.run_async(
-                user_id=user_id,
-                session_id=session_id,
-                new_message=prompt,
-            ):
-                if event.is_final_response():
-                    # print("Final response received: ", event.content.parts[0].text)
-                    response = event.content.parts[0].text
-
-    return response
+    response_mime_type="application/json",
+    temperature=0.0,
+    safety_settings=[
+        types.SafetySetting(
+            category=types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+            threshold=types.HarmBlockThreshold.OFF,
+        ),
+        types.SafetySetting(
+            category=types.HarmCategory.HARM_CATEGORY_HARASSMENT,
+            threshold=types.HarmBlockThreshold.OFF,
+        ),
+        types.SafetySetting(
+            category=types.HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+            threshold=types.HarmBlockThreshold.OFF,
+        ),
+        types.SafetySetting(
+            category=types.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+            threshold=types.HarmBlockThreshold.OFF,
+        ),
+    ],
+)
 
 
 def clean_and_parse_json(raw_response):
@@ -107,19 +55,25 @@ def clean_and_parse_json(raw_response):
             cleaned = re.sub(r"[\x00-\x1F\x7F]", " ", cleaned) 
             return json.loads(cleaned)
         except json.JSONDecodeError as e:
+            # Try to recover JSON that is embedded within other text
+            decoder = json.JSONDecoder()
+            candidates = []
+            for ch in ("{", "["):
+                idx = cleaned.find(ch)
+                while idx != -1 and len(candidates) < 50:
+                    candidates.append(idx)
+                    idx = cleaned.find(ch, idx + 1)
+            candidates.sort()
+
+            for idx in candidates:
+                try:
+                    obj, _end = decoder.raw_decode(cleaned[idx:])
+                    return obj
+                except Exception:
+                    continue
+
             print(f"Failed to parse JSON string: {e}")
             return None
-
-
-async def get_session(session_service_stateful ,app_name , user_id , session_id):
-    """Get the session for the user"""
-    return await session_service_stateful.get_session(
-        app_name=app_name,
-        user_id=user_id,
-        session_id=session_id
-    )
-    
-
 
 
 def sanitize_mermaid_output(text: str) -> str | None:
@@ -178,7 +132,19 @@ def sanitize_mermaid_output(text: str) -> str | None:
     if not first.startswith(valid_headers):
         cleaned_lines.insert(0, "flowchart LR")
 
-    return "\n".join(cleaned_lines)
+    merged = "\n".join(cleaned_lines)
+
+    # Heuristic validation: reject likely-truncated diagrams (unbalanced brackets/parens/braces)
+    pairs = [
+        ("[", "]"),
+        ("(", ")"),
+        ("{", "}"),
+    ]
+    for open_ch, close_ch in pairs:
+        if merged.count(open_ch) != merged.count(close_ch):
+            return None
+
+    return merged
 
 
 
@@ -222,11 +188,13 @@ def render_mermaid_png(mermaid_code: str, output_png: Path):
     """
     Renders Mermaid code into a PNG file using mmdc (npm).
     """
-    # Check if mmdc is available
-    if not shutil.which("mmdc"):
-        raise FileNotFoundError(
-            "mmdc command not found. Please install it using: npm install -g @mermaid-js/mermaid-cli"
+    mmdc_exe = shutil.which("mmdc") or os.getenv("MMDC_PATH")
+    if not mmdc_exe:
+        print(
+            "❌ mmdc command not found. Install it with: npm install -g @mermaid-js/mermaid-cli "
+            "and ensure it is on PATH (or set MMDC_PATH). Skipping diagram rendering."
         )
+        return False
     
     output_png.parent.mkdir(parents=True, exist_ok=True)
     mmd_path = output_png.with_suffix(".mmd")
@@ -237,7 +205,7 @@ def render_mermaid_png(mermaid_code: str, output_png: Path):
     css_path = Path("srs_engine/static/custom-diagram.css")
 
     cmd = [
-        "C:\\Users\\Smit\\AppData\\Roaming\\npm\\mmdc.CMD",
+        mmdc_exe,
         "-i", str(mmd_path),
         "-o", str(output_png),
         "-w", "2400",
@@ -251,6 +219,9 @@ def render_mermaid_png(mermaid_code: str, output_png: Path):
     try:
         subprocess.run(cmd, check=True, capture_output=True, text=True)
         print(f"✅ Mermaid diagram saved: {output_png}")
+        return True
     except subprocess.CalledProcessError as e:
-        print(f"❌ mmdc error: {e.stderr}")
-        raise
+        stderr = (e.stderr or "").strip()
+        stdout = (e.stdout or "").strip()
+        print(f"❌ mmdc error (exit {e.returncode}) while rendering {output_png}: {stderr or stdout or 'unknown error'}")
+        return False
