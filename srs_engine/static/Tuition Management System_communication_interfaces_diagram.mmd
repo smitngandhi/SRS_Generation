@@ -1,0 +1,11 @@
+graph TB
+Internet -->| TLS 1.3 | FW[Firewall]
+FW --> LB[HAProxy Load Balancer\nPort 443]
+LB --> AG[API Gateway\nKong\nRate Limiting]
+AG --> Services[Microservices Cluster\nDocker/K8s]
+Services --> DB[PostgreSQL 15]
+Services --> Redis[Redis]
+Services --> Stripe[Stripe API\nHTTPS]
+Services --> LDAP[OpenLDAP\nLDAPS]
+AG -.->|WebSocket| WS[WebSocket Server\nSocket.io]
+WS --> MA[Mobile App]

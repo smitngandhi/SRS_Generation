@@ -1,0 +1,14 @@
+graph LR
+MA[Mobile App] -->| HTTPS JSON | AG[API Gateway\nKong]
+AG --> Auth[Auth Service\nOAuth2 JWT]
+AG --> Pay[Payment Service]
+AG --> Att[Attendance Service]
+AG --> Fee[Fee Service]
+Pay --> Stripe[Stripe API\nPayment Intent v2023-10-16]
+Auth --> LDAP[OpenLDAP\nLDAPS]
+Fee --> DB[PostgreSQL 15 Primary]
+Att --> DB
+DB --> PgBouncer[PgBouncer Connection Pool]
+DB --> Rep[Read Replica\nPostgreSQL 15]
+Fee --> Rabbit[RabbitMQ\nAsync Billing Queue]
+Rabbit --> Worker[Background Worker\nPython Celery]
