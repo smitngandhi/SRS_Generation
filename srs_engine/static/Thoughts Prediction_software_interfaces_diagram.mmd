@@ -1,0 +1,5 @@
+graph TB
+App[Application Server] -->| Connection Pool | Primary[(PostgreSQL Primary)]
+Primary -.->|Replication| Replica[(Read Replica)]
+App -->| OAuth 2.0 | Auth[Auth Service]
+App -->| API | External[External Service]

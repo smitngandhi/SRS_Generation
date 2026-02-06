@@ -108,6 +108,10 @@ async def generate_srs(srs_data: SRSRequest):
     project_name = inputs["project_identity"]["project_name"] # will be used later
     author_list = inputs["project_identity"]["author"] # will be used later
     organization_name = inputs["project_identity"]["organization"] # will be used later
+    # model_provider = inputs["model_indentity"]["model_provider"]
+    # model_api_key = inputs["model_indentity"]["model_api_key"]
+    # model_name = inputs["model_indentity"]["model_name"]
+    
 
     user_id = "test"  # In real scenarios, fetch from auth system
 

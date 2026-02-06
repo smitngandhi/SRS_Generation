@@ -1,0 +1,5 @@
+graph TD
+Client[Client Application] -->| TLS 1.3 Handshake | WAF[Web Application Firewall]
+WAF -->| Rate Limiting | LB[Load Balancer]
+LB -->| Round Robin | Server[App Server]
+Server <-->| Internal mTLS | DB[(Database Cluster)]

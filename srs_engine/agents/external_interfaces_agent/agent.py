@@ -1,20 +1,9 @@
 import os
-from dotenv import load_dotenv, find_dotenv
 from google.adk.agents import LlmAgent
-from google.adk.models.lite_llm import LiteLlm
 from .prompt import AGENT_DESCRIPTION , AGENT_INSTRUCTION
 from ...schemas.external_interfaces_schema import ExternalInterfacesSection
 from ...utils.globals import generate_content_config
-
-
-load_dotenv(find_dotenv())
-
-GROQ_MODEL = os.getenv("GROQ_MODEL")
-
-groq_llm = LiteLlm(
-    model=GROQ_MODEL
-)
-
+from ...utils.model import *
 
 # ==================================================
 # Phase 3 System Design Agent ( for CLI )
