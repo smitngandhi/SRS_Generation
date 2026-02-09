@@ -3,9 +3,9 @@ from dotenv import load_dotenv, find_dotenv
 from google.adk.agents import LlmAgent
 from google.adk.models.lite_llm import LiteLlm
 from .prompt import AGENT_DESCRIPTION , AGENT_INSTRUCTION
-from ...schemas.system_features_schema import SystemFeaturesSection
-from ...utils.globals import generate_content_config
-from ...utils.model import *
+from ....schemas.system_features_schema import SystemFeaturesSection
+from ....utils.globals import generate_content_config
+from ....utils.model import *
 
 
 # ==================================================

@@ -4,13 +4,13 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from google.adk.sessions import InMemorySessionService
 import uuid
-from srs_engine.agents.introduction_agent import create_introduction_agent 
-from srs_engine.agents.overall_description_agent import create_overall_description_agent 
-from srs_engine.agents.system_features_agent import create_system_features_agent
-from srs_engine.agents.external_interfaces_agent import create_external_interfaces_agent
-from srs_engine.agents.nfr_agent import create_nfr_agent
-from srs_engine.agents.glossary_agent import create_glossary_agent
-from srs_engine.agents.assumptions_agent import create_assumptions_agent
+from srs_engine.agents.technical_srs_agents.introduction_agent import create_introduction_agent as create_technical_srs_introduction_agent
+from srs_engine.agents.technical_srs_agents.overall_description_agent import create_overall_description_agent as create_technical_srs_overall_description_agent
+from srs_engine.agents.technical_srs_agents.system_features_agent import create_system_features_agent as create_technical_srs_system_features_agent
+from srs_engine.agents.technical_srs_agents.external_interfaces_agent import create_external_interfaces_agent as create_technical_srs_external_interfaces_agent
+from srs_engine.agents.technical_srs_agents.nfr_agent import create_nfr_agent as create_technical_srs_nfr_agent
+from srs_engine.agents.technical_srs_agents.glossary_agent import create_glossary_agent as create_technical_srs_glossary_agent
+from srs_engine.agents.technical_srs_agents.assumptions_agent import create_assumptions_agent as create_technical_srs_assumptions_agent
 from srs_engine.schemas.srs_input_schema import SRSRequest
 from srs_engine.utils.globals import (
     create_session , 
@@ -42,8 +42,7 @@ templates = Jinja2Templates(directory="srs_engine/templates")
 
 session_service_stateful = InMemorySessionService()
 
-
-async def create_srs_agent():
+async def create_technical_srs_agent():
      
     first_agent = SequentialAgent(
           name = "first_agent",
@@ -51,11 +50,11 @@ async def create_srs_agent():
                ParallelAgent(
                     name = "first_parallel_agent",
                     sub_agents = [
-                         create_introduction_agent(),
-                         create_overall_description_agent(),
-                         create_system_features_agent(),
-                         create_external_interfaces_agent(),
-                         create_nfr_agent()
+                         create_technical_srs_introduction_agent(),
+                         create_technical_srs_overall_description_agent(),
+                         create_technical_srs_system_features_agent(),
+                         create_technical_srs_external_interfaces_agent(),
+                         create_technical_srs_nfr_agent()
                     ],
                     description = "This agent handles the generation of the Introduction and Overall Description sections of the SRS document."
                )
@@ -68,8 +67,8 @@ async def create_srs_agent():
                ParallelAgent(
                    name = "finalization_agent",
                    sub_agents = [
-                       create_glossary_agent(),
-                       create_assumptions_agent()
+                       create_technical_srs_glossary_agent(),
+                       create_technical_srs_assumptions_agent()
                    ],
                    description = "This agent handles the generation of the Glossary and Assumptions sections of the SRS document."
                )
@@ -78,7 +77,6 @@ async def create_srs_agent():
 
     
     return first_agent , second_agent
-
 
 
 
@@ -124,10 +122,9 @@ async def generate_srs(srs_data: SRSRequest):
 
     await create_session(session_service_stateful, project_name, user_id, session_id , initial_state)
 
-
     print("Session created with ID: ", session_id)
 
-    first_agent , second_agent  = await create_srs_agent()
+    first_agent , second_agent  = await create_technical_srs_agent()
     runner = await create_runner(first_agent, project_name, session_service_stateful)
 
     print("Runner created for agent ")
@@ -142,10 +139,8 @@ async def generate_srs(srs_data: SRSRequest):
     session = await get_session(session_service_stateful,project_name , user_id , session_id)
 
     print("Session state after agent run: ", session.state)
-
     
     time.sleep(20) 
-
 
     second_runner = await create_runner(second_agent, project_name, session_service_stateful)   
     

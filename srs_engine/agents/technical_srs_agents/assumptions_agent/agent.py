@@ -1,34 +1,40 @@
 import os
+
 from google.adk.agents import LlmAgent
+from google.adk.models.lite_llm import LiteLlm
+from srs_engine.schemas.glossary_schema import GlossarySection
 from .prompt import AGENT_DESCRIPTION , AGENT_INSTRUCTION
-from ...schemas.external_interfaces_schema import ExternalInterfacesSection
-from ...utils.globals import generate_content_config
-from ...utils.model import *
+from ....schemas.assumptions_schema import AssumptionsSection
+from ....utils.globals import generate_content_config
+from ....utils.model import *
+
+
+
 
 # ==================================================
 # Phase 3 System Design Agent ( for CLI )
 # ==================================================
 
-external_interfaces_agent = LlmAgent(
-    name="external_interfaces_agent",
+assumptions_agent = LlmAgent(
+    name="assumptions_agent",
     model=groq_llm,
-    output_schema=ExternalInterfacesSection,
+    output_schema=AssumptionsSection,
     description=AGENT_DESCRIPTION,
     instruction=AGENT_INSTRUCTION,
-    output_key="external_interfaces_section",
+    output_key="assumptions_section",
     generate_content_config = generate_content_config
 )
 
 
 ## For app
 
-def create_external_interfaces_agent():
+def create_assumptions_agent():
     return LlmAgent(
-    name="external_interfaces_agent",
+    name="assumptions_agent",
     model=groq_llm,
-    output_schema=ExternalInterfacesSection,
+    output_schema=AssumptionsSection,
     description=AGENT_DESCRIPTION,
     instruction=AGENT_INSTRUCTION,
-    output_key="external_interfaces_section",
+    output_key="assumptions_section",
     generate_content_config = generate_content_config
 )

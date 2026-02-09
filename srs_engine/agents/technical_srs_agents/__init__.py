@@ -1,0 +1,6 @@
+from .assumptions_agent import create_assumptions_agent as create_technical_srs_assumptions_agent
+from .glossary_agent import create_glossary_agent as create_technical_srs_glossary_agent
+from .introduction_agent import create_introduction_agent as create_technical_srs_introduction_agent
+from .nfr_agent import create_nfr_agent as create_technical_srs_nfr_agent
+from .overall_description_agent import create_overall_description_agent as create_technical_srs_overall_description_agent
+from .system_features_agent import create_system_features_agent as create_technical_srs_system_features_agent   

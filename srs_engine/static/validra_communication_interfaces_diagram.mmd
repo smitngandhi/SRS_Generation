@@ -1,0 +1,5 @@
+graph TD
+Client[Client Application] -->| TLS 1.3<br/>Port 443 | WAF[Web Application Firewall]
+WAF -->| Rate Limit Check | LB[Load Balancer]
+LB -->| HTTP/2 | Server[Application Server]
+Server <-->| WebSocket WSS | RealTime[Real-time Service]
