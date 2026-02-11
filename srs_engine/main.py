@@ -140,7 +140,7 @@ async def generate_srs(srs_data: SRSRequest):
 
     print("Session state after agent run: ", session.state)
     
-    time.sleep(20) 
+    time.sleep(60) 
 
     second_runner = await create_runner(second_agent, project_name, session_service_stateful)   
     
@@ -164,12 +164,14 @@ async def generate_srs(srs_data: SRSRequest):
     external_interfaces_section = clean_interface_diagrams(clean_and_parse_json(session.state.get("external_interfaces_section", {})))
     print("External Interfaces Section: ", external_interfaces_section)
 
+    base_dir = Path("./srs_engine/generated_images") / project_name
+    base_dir.mkdir(parents=True, exist_ok=True)
 
     image_paths = {
-    'user_interfaces': Path(f'./srs_engine/static/{project_name}_user_interfaces_diagram.png'),
-    'hardware_interfaces': Path(f'./srs_engine/static/{project_name}_hardware_interfaces_diagram.png'),
-    'software_interfaces': Path(f'./srs_engine/static/{project_name}_software_interfaces_diagram.png'),
-    'communication_interfaces': Path(f'./srs_engine/static/{project_name}_communication_interfaces_diagram.png')
+    "user_interfaces": base_dir / f"{project_name}_user_interfaces_diagram.png",
+    "hardware_interfaces": base_dir / f"{project_name}_hardware_interfaces_diagram.png",
+    "software_interfaces": base_dir / f"{project_name}_software_interfaces_diagram.png",
+    "communication_interfaces": base_dir / f"{project_name}_communication_interfaces_diagram.png",
 }
 
 

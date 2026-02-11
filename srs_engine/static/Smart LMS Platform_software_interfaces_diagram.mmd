@@ -1,5 +1,0 @@
-graph TB
-App[Java Application Server] -->| Connection Pool | Primary[(PostgreSQL Primary)]
-Primary -.->|Replication| Replica[(Read Replica)]
-App -->| Read Queries | Replica
-App -->| API Calls | Gateway[API Gateway]

@@ -1,6 +1,0 @@
-graph TB
-App[Python Application Server] -->| PgBouncer Pool | Primary[(PostgreSQL 15<br/>Primary)]
-Primary -.->|Streaming Replication| Replica[(Read Replica)]
-App -->| Read Queries | Replica
-App -->| OAuth 2.0 | Auth[External Auth Service]
-App -->| S3 SDK | S3[AWS S3 Bucket<br/>Encrypted AES-256]

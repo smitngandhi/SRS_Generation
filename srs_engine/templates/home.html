@@ -121,21 +121,43 @@
                     <label for="domain" class="required">Domain/Industry</label>
                     <select id="domain" name="domain" required>
                         <option value="">Select domain...</option>
-                        <option value="Finance">Finance</option>
-                        <option value="Healthcare">Healthcare</option>
-                        <option value="E-commerce">E-commerce</option>
+                        <option value="Healthcare">Healthcare & Medical Devices</option>
+                        <option value="Finance">Financial Services & Fintech</option>
+                        <option value="Aerospace">Aerospace & Aviation</option>
+                        <option value="Automotive">Automotive</option>
+                        <option value="Telecom">Telecommunications</option>
+                        <option value="Energy">Energy & Utilities</option>
+                        <option value="E-commerce">E-commerce & Retail</option>
                         <option value="Education">Education</option>
-                        <option value="Telecom">Telecom</option>
-                        <option value="Retail">Retail</option>
                         <option value="Other">Other</option>
                     </select>
                     <input 
                         type="text" 
                         id="domain_custom" 
                         class="custom-input"
-                        placeholder="Specify domain"
+                        placeholder="Specify domain (optional - for custom naming)"
                         style="display: none;"
                     >
+                </div>
+
+                <!-- Domain-Specific Information Section -->
+                <div id="domainInfoSection" class="domain-info-section">
+                    <h3 id="domainTitle"></h3>
+                    
+                    <div class="regulatory-standards">
+                        <h4>📋 Regulatory Standards & Compliance</h4>
+                        <div id="standardsList" class="standards-list"></div>
+                    </div>
+
+                    <div class="sections-list">
+                        <h4>📄 Domain-Specific SRS Sections</h4>
+                        <div id="sectionsList"></div>
+                    </div>
+
+                    <div class="info-note">
+                        <strong>ℹ️ Note:</strong>
+                        <span id="infoNote"></span>
+                    </div>
                 </div>
             </section>
 
@@ -320,5 +342,7 @@
     </div>
 
     <script src="{{ url_for('static', path='home.js') }}"></script>
+    <script src="{{ url_for('static', path='domain-data.js') }}"></script>
+
 </body>
 </html>

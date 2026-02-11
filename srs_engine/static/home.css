@@ -351,3 +351,113 @@ textarea:valid:not(:placeholder-shown),
 select:valid:not(:placeholder-shown) {
     border-color: var(--success-color);
 }
+
+/* Domain Information Section */
+.domain-info-section {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: var(--background);
+    border-left: 4px solid var(--primary-color);
+    border-radius: 8px;
+    display: none;
+}
+
+.domain-info-section.active {
+    display: block;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.domain-info-section h3 {
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
+.regulatory-standards {
+    background-color: var(--surface);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    box-shadow: var(--shadow-sm);
+}
+
+.regulatory-standards h4 {
+    color: var(--text-primary);
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1em;
+    font-weight: 600;
+}
+
+.standards-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.standard-badge {
+    background-color: #e7f3ff;
+    color: #0066cc;
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    font-weight: 500;
+}
+
+.sections-list {
+    background-color: var(--surface);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: var(--shadow-sm);
+}
+
+.sections-list h4 {
+    color: var(--text-primary);
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: 1em;
+    font-weight: 600;
+}
+
+.section-item {
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    background-color: var(--background);
+    border-left: 3px solid var(--success-color);
+    border-radius: 4px;
+    font-size: 0.9em;
+    color: var(--text-primary);
+    transition: background-color 0.2s ease;
+}
+
+.section-item:hover {
+    background-color: #e9ecef;
+}
+
+.info-note {
+    background-color: #fff3cd;
+    border: 1px solid #ffc107;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 15px;
+    font-size: 0.9em;
+    color: #856404;
+}
+
+.info-note strong {
+    display: block;
+    margin-bottom: 5px;
+}

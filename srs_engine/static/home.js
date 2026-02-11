@@ -22,6 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (domainSelect) {
         domainSelect.addEventListener("change", (e) => {
+            // Domain info display is now handled by domain-data.js
+            // Only show/hide custom input here
             if (e.target.value === "Other") {
                 domainCustomInput.style.display = "block";
             } else {
@@ -78,13 +80,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // ---------- Domain ----------
         let domain = formData.get("domain");
+        
+        // If "Other" is selected, check if custom domain is provided
+        // If no custom domain, use "Other" as the domain value
         if (domain === "Other") {
             const customDomain = document.getElementById("domain_custom")?.value.trim();
-            if (!customDomain) {
-                alert("Please specify the domain");
-                return;
+            if (customDomain) {
+                domain = customDomain; // Use custom domain name if provided
             }
-            domain = customDomain;
+            // Otherwise keep domain as "Other" - it's valid
         }
 
         // ---------- Compliance ----------
@@ -187,4 +191,3 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
-
